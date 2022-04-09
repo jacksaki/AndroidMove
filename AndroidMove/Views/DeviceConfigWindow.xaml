@@ -1,0 +1,97 @@
+﻿<mahApps:MetroWindow
+    x:Class="AndroidMove.Views.DeviceConfigWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:dlg="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+    xmlns:v="clr-namespace:AndroidMove.Views"
+    xmlns:vm="clr-namespace:AndroidMove.ViewModels"
+    dlg:DialogParticipation.Register="{Binding}"
+    SizeToContent="WidthAndHeight"
+    Background="{DynamicResource MaterialDesignPaper}"
+    BorderThickness="1"
+    FontFamily="pack:application,,,/MaterialDesignThemes.Wpf;conponent/Resources/Roboto/#Roboto"
+    GlowBrush="{DynamicResource AccentColorBrush}"
+    TextElement.FontSize="16"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    >
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    <b:Interaction.Triggers>
+        <!--  Viewに特別な要件が存在しない限りは、トリガーやアクションの自作にこだわらず積極的にコードビハインドを使いましょう  -->
+        <!--  Viewのコードビハインドは、基本的にView内で完結するロジックとViewModelからのイベントの受信(専用リスナを使用する)に限るとトラブルが少なくなります  -->
+        <!--  Livet1.1からはコードビハインドでViewModelのイベントを受信するためのWeakEventLisnterサポートが追加されています  -->
+        <b:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodName="Initialize" MethodTarget="{Binding}" />
+        </b:EventTrigger>
+        <l:InteractionMessageTrigger MessageKey="Close" Messenger="{Binding Messenger, Mode=OneWay}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False"/>
+        </l:InteractionMessageTrigger>
+        <!--  Windowが閉じたタイミングでViewModelのDisposeメソッドが呼ばれます  -->
+        <b:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </b:EventTrigger>
+        <!--  WindowのCloseキャンセル処理に対応する場合は、WindowCloseCancelBehaviorの使用を検討してください  -->
+    </b:Interaction.Triggers>
+    <GroupBox Header="設定">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="ディレクトリ（Android）"/>
+                <TextBox Grid.Column="1" Width="200" Text="{Binding TargetDirectory,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Row="1" Text="ディレクトリ（PC）"/>
+                <TextBox Grid.Column="1" Width="200" Grid.Row="1" Text="{Binding DestDirectory,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="2" Grid.Row="1">
+                    <wpf:PackIcon Kind="FolderSearch"/>
+                </Button>
+                <StackPanel Grid.Row="2" Orientation="Vertical">
+                    <TextBlock Text="リネームルール"/>
+                    <TextBlock Text="連番は「?SEQUENCE?」" Foreground="Red"/>
+
+                </StackPanel>
+                <TextBox VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2" Width="200" Text="{Binding RenameRule,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Cursor="Arrow"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Margin="10,10,10,4" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedSecondaryLightButton}" Command="{Binding OKCommand}">
+                    <wpf:PackIcon Kind="Floppy" Width="28" Height="28"/>
+                </Button>
+                <Button Margin="10,10,10,4" Grid.Column="2" Style="{StaticResource MaterialDesignRaisedSecondaryLightButton}" Command="{Binding CancelCommand}">
+                    <wpf:PackIcon Kind="ExitToApp" Width="28" Height="28"/>
+                </Button>
+            </Grid>
+        </Grid>
+    </GroupBox>
+</mahApps:MetroWindow>

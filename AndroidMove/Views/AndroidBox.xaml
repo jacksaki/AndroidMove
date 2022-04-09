@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="AndroidMove.Views.AndroidBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AndroidMove.Views"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+            xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
+            xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+            xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" 
+             >
+    <b:Interaction.Triggers>
+        <l:InteractionMessageTrigger MessageKey="ShowFiles" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type local:FilesWindow}" Mode="Modal"/>
+        </l:InteractionMessageTrigger>
+        <l:InteractionMessageTrigger MessageKey="ShowConfig" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type local:DeviceConfigWindow}" Mode="Modal"/>
+        </l:InteractionMessageTrigger>
+    </b:Interaction.Triggers>
+    <UserControl.Resources>
+        <Style TargetType="wpf:PackIcon">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Width" Value="28"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <wpf:PackIcon Kind="Android" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Device.Name}" VerticalAlignment="Center"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Command="{Binding MoveFileCommand}" Cursor="Hand">
+                <wpf:PackIcon Kind="FileSend"/>
+            </Button>
+            <Button Grid.Column="1" Command="{Binding MoveAllFilesCommand}">
+                <wpf:PackIcon Kind="FileSendOutline"/>
+            </Button>
+            <Button Grid.Column="2" Command="{Binding ShowFilesCommand}">
+                <wpf:PackIcon Kind="ViewList"/>
+            </Button>
+            <Button Grid.Column="3" Command="{Binding ConfigCommand}" Cursor="Hand">
+                <wpf:PackIcon Kind="Cog"/>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>
