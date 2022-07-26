@@ -23,9 +23,14 @@
             <Setter Property="Height" Value="28"/>
             <Setter Property="Width" Value="28"/>
         </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Margin" Value="4"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -40,18 +45,42 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Command="{Binding MoveFileCommand}" Cursor="Hand">
+            <Button Grid.Column="0" Command="{Binding CaptureAndMoveCommand}" Cursor="Hand">
+                <StackPanel Orientation="Horizontal">
+                    <wpf:PackIcon Kind="Camera"/>
+                    <wpf:PackIcon Kind="ArrowRight"/>
+                    <wpf:PackIcon Kind="FileSend"/>
+                </StackPanel>
+            </Button>
+            <Button Grid.Column="1" Command="{Binding MoveFileCommand}" Cursor="Hand">
                 <wpf:PackIcon Kind="FileSend"/>
             </Button>
-            <Button Grid.Column="1" Command="{Binding MoveAllFilesCommand}">
+            <Button Grid.Column="2" Command="{Binding MoveAllFilesCommand}">
                 <wpf:PackIcon Kind="FileSendOutline"/>
             </Button>
-            <Button Grid.Column="2" Command="{Binding ShowFilesCommand}">
+            <Button Grid.Column="3" Command="{Binding ShowFilesCommand}">
                 <wpf:PackIcon Kind="ViewList"/>
             </Button>
-            <Button Grid.Column="3" Command="{Binding ConfigCommand}" Cursor="Hand">
+            <Button Grid.Column="4" Command="{Binding ConfigCommand}" Cursor="Hand">
                 <wpf:PackIcon Kind="Cog"/>
             </Button>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <ToggleButton Margin="4" IsChecked="{Binding Clipboard,Mode=TwoWay}"/>
+            <TextBlock Margin="4" VerticalAlignment="Center" Text="コピーもする"/>
+        </StackPanel>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Scale: " VerticalAlignment="Center"/>
+            <Slider Margin="4" Grid.Column="1" Maximum="1000" Minimum="1" TickFrequency="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Value="{Binding ScalePercent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <TextBox Margin="4" Text="{Binding ScalePercent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Cursor="Arrow"/>
+                <TextBlock Margin="4" Text="%"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

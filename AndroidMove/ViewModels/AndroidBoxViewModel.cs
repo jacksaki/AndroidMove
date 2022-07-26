@@ -53,11 +53,68 @@ namespace AndroidMove.ViewModels {
         public void MoveFile() {
             var file = this.Device.Files.OrderByDescending(x => x.Created).FirstOrDefault();
             if (file != null) {
-                this.Device.Pull(file,true);
+                this.Device.Pull(new PullParameter() {
+                    File = file,
+                    DeleteFile = true,
+                    CopyToClipboard = this.Clipboard,
+                    ScalePercent = this.ScalePercent
+                });
+            }
+        }
+
+        private bool _Clipboard = true;
+
+        public bool Clipboard {
+            get {
+                return _Clipboard;
+            }
+            set { 
+                if (_Clipboard == value) {
+                    return;
+                }
+                _Clipboard = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _ScalePercent = 100;
+
+        public int ScalePercent {
+            get {
+                return _ScalePercent;
+            }
+            set { 
+                if (_ScalePercent == value) {
+                    return;
+                }
+                _ScalePercent = value;
+                RaisePropertyChanged();
             }
         }
 
 
+        private ViewModelCommand _CaptureAndMoveCommand;
+
+        public ViewModelCommand CaptureAndMoveCommand {
+            get {
+                if (_CaptureAndMoveCommand == null) {
+                    _CaptureAndMoveCommand = new ViewModelCommand(CaptureAndMove);
+                }
+                return _CaptureAndMoveCommand;
+            }
+        }
+
+        public void CaptureAndMove() {
+            var file =  this.Device.Capture();
+            if (file != null) {
+                this.Device.Pull(new PullParameter() {
+                    File = file,
+                    DeleteFile = true,
+                    CopyToClipboard = this.Clipboard,
+                    ScalePercent = this.ScalePercent
+                });
+            }
+        }
         private ViewModelCommand _ConfigCommand;
 
         public ViewModelCommand ConfigCommand {

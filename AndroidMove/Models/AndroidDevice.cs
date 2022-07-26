@@ -51,19 +51,24 @@ namespace AndroidMove.Models {
                 throw;
             }
         }
-        public void Pull(AndroidFile file,bool deleteSourceFile) {
-            Logger.Info($"{file.Path} -> {this.Config.DestDirectory}");
+        public void Pull(PullParameter parameter) {
+            Logger.Info($"{parameter.File.Path} -> {this.Config.DestDirectory}");
+            var destPath = System.IO.Path.Combine(this.Config.DestDirectory, GetRenameFileName(parameter.File.FileName));
+
             var p = new Process() { StartInfo = CreateProcessStartInfo() };
             try {
-                p.StartInfo.Arguments = $"-s {this.Serial} pull {file.Path} {System.IO.Path.Combine(this.Config.DestDirectory, GetRenameFileName(file.FileName))}";
+                p.StartInfo.Arguments = $"-s {this.Serial} pull \"{parameter.File.Path}\" \"{destPath}\"";
                 p.Start();
                 p.WaitForExit();
             } catch (Exception ex) {
                 Logger.Error(ex.Message);
                 throw;
             }
-            if (deleteSourceFile) {
-                this.Delete(file);
+            if (parameter.DeleteFile) {
+                this.Delete(parameter.File);
+            }
+            if (parameter.CopyToClipboard) {
+                ClipboardUtil.CopyImage(destPath,parameter.ScalePercent);
             }
         }
         public ObservableCollection<AndroidFile> Files {
@@ -75,6 +80,16 @@ namespace AndroidMove.Models {
                 this.Files.Add(file);
             }
         }
+
+        internal AndroidFile Capture() {
+            using (var p = new Process { StartInfo = CreateProcessStartInfo() }) {
+                p.StartInfo.Arguments = $"-s {this.Serial} shell screencap -p {this.Config.TargetDirectory}/screenshot.png";
+                p.Start();
+                p.WaitForExit();
+                return AndroidFile.Create(this.Config.TargetDirectory,"screenshot.png");
+            }
+        }
+
         private static ProcessStartInfo CreateProcessStartInfo() {
             var ps = new ProcessStartInfo();
             ps.FileName = AppConfig.GetInstance().AdbPath;

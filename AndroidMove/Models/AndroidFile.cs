@@ -43,7 +43,11 @@ namespace AndroidMove.Models {
                 FileName = m.Groups["name"].Value
             };
         }
-        
+        public static AndroidFile Create(string dir,string fileName) {
+            return new AndroidFile(dir) {
+                FileName = fileName
+            };
+        }
         public string PermissionText {
             get;
             private set;

@@ -52,8 +52,13 @@ namespace AndroidMove.ViewModels {
             }
         }
 
-        public void SendFile(AndroidFile parameter) {
-            this.Device.Pull(parameter,true);
+        public void SendFile(AndroidFile file) {
+            this.Device.Pull(new PullParameter() {
+                File = file,
+                DeleteFile = true,
+                CopyToClipboard = false,
+                ScalePercent = 100
+            });
         }
 
     }
